@@ -7,15 +7,14 @@ gr(size=(500, 500));
 
 # ### snippet 0.4
 
-# Below `dataset(...)` provides access to often used R datasets.
-# If this is not a common R dataset, see the chapter 4 snippets.
-
-cars = dataset("datasets", "cars");
-first(cars, 5)
+howell1 = CSV.read(rel_path("..", "data", "Howell1.csv"), delim=';')
+df = convert(DataFrame, howell1);
+df2 = filter(row -> row[:age] >= 18, df);
+first(df2, 5)
 
 # Fit a linear regression of distance on speed
 
-m = lm(@formula(Dist ~ Speed), cars)
+m = lm(@formula(height ~ weight), df2)
 
 # estimated coefficients from the model
 
@@ -23,7 +22,7 @@ coef(m)
 
 # Plot residuals against speed
 
-scatter( cars[:Speed], residuals(m), xlab="Speed",
+scatter( df2[:height], residuals(m), xlab="Height",
 ylab="Model residual values", lab="Model residuals")
   
 # End of `00/clip-04-05.jl`
