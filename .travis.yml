@@ -5,6 +5,7 @@ dist: xenial
 
 os:
   - linux
+  #- osx
   
 env:
   - JULIA_CMDSTAN_HOME="$HOME/cmdstan-2.19.1/"
@@ -18,7 +19,14 @@ before_install:
   - cd $OLDWD
   
 julia:
-  - 1.1
+  #- 1.1
+  #- 1.2
+  - nightly
+
+matrix:
+  allow_failures:
+  - julia: 1.1, 1.2
+  - os: osx
   
 notifications:
   email: true
@@ -29,15 +37,13 @@ git:
 jobs:
   include:
     - stage: Documentation
-      julia: 1.1
+      julia: 1.2
       os: linux
       script:
-        #- if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-        #- cd $HOME; if [[ ! -d cmdstan ]]; then git clone https://github.com/stan-dev/cmdstan.git; fi
-        #- cd $HOME/cmdstan; git checkout v2.19.1; make stan-update; make build
-        #- export JULIA_CMDSTAN_HOME=$HOME/cmdstan
-        #- cd $TRAVIS_BUILD_DIR
         - julia --project=docs -e 'using Pkg; Pkg.instantiate(); Pkg.develop(PackageSpec(path=pwd()))'
         - julia --project=docs --color=yes docs/make.jl
       after_success: skip
 
+after_success:
+  - julia --project=test/coverage -e 'using Pkg; Pkg.instantiate()'
+  - julia --project=test/coverage test/coverage/coverage.jl
