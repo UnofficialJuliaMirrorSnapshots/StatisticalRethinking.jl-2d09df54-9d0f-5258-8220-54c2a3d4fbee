@@ -1,5 +1,5 @@
 using StatisticalRethinking, CmdStan
-gr(size=(500,500));
+gr(size=(600,600));
 
 ProjDir = rel_path("..", "scripts", "02")
 cd(ProjDir)
@@ -63,6 +63,7 @@ if rc == 0
     plot!(p[i], x, pdf.(Normal(fits[i].μ, fits[i].σ), x), lab="Fitted Normal($μ, $σ)")
   end
   plot(p..., layout=(4, 1))
+  #savefig("m2.1s.pdf")
 end
 
 hpd(chn, alpha=0.055)
