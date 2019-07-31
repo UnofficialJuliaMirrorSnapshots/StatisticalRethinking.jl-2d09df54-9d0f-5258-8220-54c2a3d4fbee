@@ -1,18 +1,18 @@
-using StanModels
+using StatisticalRethinking, CmdStan
 
-ProjDir = rel_path_s("..", "scripts", "05")
+ProjDir = rel_path("..", "scripts", "05")
 cd(ProjDir)
 
 wd = CSV.read(rel_path("..", "data", "WaffleDivorce.csv"), delim=';')
 df = convert(DataFrame, wd);
 
-mean_ma = mean(df[:Marriage])
-df[:Marriage_s] = convert(Vector{Float64},
-  (df[:Marriage]) .- mean_ma)/std(df[:Marriage]);
+mean_ma = mean(df[!, :Marriage])
+df[!, :Marriage_s] = convert(Vector{Float64},
+  (df[!, :Marriage]) .- mean_ma)/std(df[!, :Marriage]);
 
-mean_mam = mean(df[:MedianAgeMarriage])
-df[:MedianAgeMarriage_s] = convert(Vector{Float64},
-  (df[:MedianAgeMarriage]) .- mean_mam)/std(df[:MedianAgeMarriage]);
+mean_mam = mean(df[!, :MedianAgeMarriage])
+df[!, :MedianAgeMarriage_s] = convert(Vector{Float64},
+  (df[!, :MedianAgeMarriage]) .- mean_mam)/std(df[!, :MedianAgeMarriage]);
 
 df[1:6, [1, 7, 14, 15]]
 
@@ -52,13 +52,13 @@ stanmodel = Stanmodel(name="m5_3",
 monitors = ["a", "bA", "bM", "sigma", "Divorce"],
  model=m5_3, output_format=:mcmcchains);
 
-m5_3_data = Dict("N" => size(df, 1), "divorce" => df[:Divorce],
-    "marriage_z" => df[:Marriage_s], "median_age_z" => df[:MedianAgeMarriage_s]);
+m5_3_data = Dict("N" => size(df, 1), "divorce" => df[!, :Divorce],
+    "marriage_z" => df[!, :Marriage_s], "median_age_z" => df[!, :MedianAgeMarriage_s]);
 
 rc, chn, cnames = stan(stanmodel, m5_3_data, ProjDir, diagnostics=false,
   CmdStanDir=CMDSTAN_HOME);
 
-describe(chn)
+MCMCChains.describe(chn)
 
 rethinking_results = "
        mean   sd  5.5% 94.5% n_eff Rhat

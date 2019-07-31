@@ -3,7 +3,7 @@
 # Load Julia packages (libraries) needed
 
 using StatisticalRethinking, CmdStan
-gr(size=(600,800));
+#gr(size=(600,800));
 
 # CmdStan uses a tmp directory to store the output of cmdstan
 
@@ -56,7 +56,7 @@ rc, chn, cnames = stan(stanmodel, binomialdata, ProjDir, diagnostics=false,
 
 # Describe the draws
 
-describe(chn)
+MCMCChains.describe(chn)
 
 # Plot the 4 chains
 

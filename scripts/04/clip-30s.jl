@@ -1,7 +1,7 @@
 # Load Julia packages (libraries) needed  for the snippets in chapter 0
 
 using StatisticalRethinking, CmdStan, LinearAlgebra
-gr(size=(600,600));
+#gr(size=(600,600));
 
 # CmdStan uses a tmp directory to store the output of cmdstan
 
@@ -28,7 +28,7 @@ chn = deserialize(joinpath(ProjDir, "m4.1s.jls"))
 
 # Describe the draws
 
-describe(chn)
+MCMCChains.describe(chn)
 
 # Plot the density of posterior draws
 

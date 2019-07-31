@@ -1,5 +1,5 @@
 using StatisticalRethinking, CmdStan, GLM
-gr(size=(600,600))
+#gr(size=(600,600))
 
 ProjDir = rel_path("..", "scripts", "00")
 cd(ProjDir)
@@ -84,7 +84,7 @@ chns = set_section(chain, Dict(
   )
 )
 
-describe(chns)
+MCMCChains.describe(chns)
 
 ols = lm(@formula(height ~ weight), train_cut)
 

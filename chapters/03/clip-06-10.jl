@@ -1,5 +1,5 @@
 using StatisticalRethinking, Optim
-gr(size=(600,600));
+#gr(size=(600,600));
 
 p_grid = range(0, step=0.001, stop=1)
 prior = ones(length(p_grid))
@@ -12,7 +12,7 @@ samples = sample(p_grid, Weights(posterior), N);
 
 chn = MCMCChains.Chains(reshape(samples, N, 1, 1), ["toss"]);
 
-describe(chn)
+MCMCChains.describe(chn)
 
 v = 0.0
 for i in 1:length(p_grid)

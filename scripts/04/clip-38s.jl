@@ -9,7 +9,7 @@
 # We begin by importing all the necessary libraries.
 
 using StatisticalRethinking, CmdStan, GLM
-gr(size=(600,600))
+#gr(size=(600,600))
 
 ProjDir = rel_path("..", "scripts", "00")
 cd(ProjDir)
@@ -134,7 +134,7 @@ chns = set_section(chain, Dict(
 
 # Describe the chains.
 
-describe(chns)
+MCMCChains.describe(chns)
 
 # Perform multivariate OLS.
 

@@ -1,7 +1,7 @@
 # Load Julia packages (libraries) needed.
 
 using StatisticalRethinking, CmdStan
-gr(size=(600,600));
+#gr(size=(600,600));
 
 ProjDir = rel_path("..", "scripts", "05")
 cd(ProjDir)
@@ -10,27 +10,13 @@ cd(ProjDir)
 
 wd = CSV.read(rel_path("..", "data", "WaffleDivorce.csv"), delim=';');
 df = convert(DataFrame, wd);
-df[:A] = scale(df[:MedianAgeMarriage]);
-df[:D] = scale(df[:Divorce]);
+df[!, :A] = scale(df[!, :MedianAgeMarriage]);
+df[!, :D] = scale(df[!, :Divorce]);
 first(df, 5)
 
 # ### snippet 5.1
 
-std(df[:MedianAgeMarriage])
-
-# Define the Stan language model
-#=
-m5.1.1 <- ulam(
-    alist(
-        D ~ dnorm( mu , sigma ) ,
-        mu <- a + bA * A ,
-        a ~ dnorm( 0 , 0.2 ) ,
-        bA ~ dnorm( 0 , 0.5 ) ,
-        sigma ~ dexp( 1 )
-    ) , data = list(A=d$MedianAgeMarriage.s,
-      D=d$Divorce.s), chain=4 )
-precis(m5.1.1)
-=#
+std(df[!, :MedianAgeMarriage])
 
 ad = "
 data {
@@ -47,12 +33,9 @@ parameters {
 
 model {
   vector[N] mu;
-  # priors
   a ~ normal(0, 0.2);
   bA ~ normal(0, 0.5);
   sigma ~ exponential(1);
-  
-  # likelihood
   mu = a + bA * A;
   D ~ normal(mu , sigma);
 }
@@ -64,8 +47,8 @@ m5_1s = Stanmodel(name="MedianAgeDivorce", model=ad);
 
 # Input data for cmdstan
 
-data = Dict("N" => length(df[:D]), "D" => df[:Divorce],
-    "A" => df[:A]);
+data = Dict("N" => length(df[!, :D]), "D" => df[!, :Divorce],
+    "A" => df[!, :A]);
 
 # Sample using cmdstan
 
@@ -74,7 +57,7 @@ rc, chn, cnames = stan(m5_1s, data, ProjDir, diagnostics=false,
 
 # Describe the draws
 
-describe(chn)
+MCMCChains.describe(chn)
 
 # Plot the density of posterior draws
 
@@ -97,7 +80,7 @@ alpha_vals = convert(Vector{Float64}, reshape(chn.value[:, 1, :], (rws*chns)))
 beta_vals = convert(Vector{Float64}, reshape(chn.value[:, 2, :], (rws*chns)))
 yi = mean(alpha_vals) .+ mean(beta_vals)*xi
 
-scatter(df[:A], df[:D], color=:darkblue,
+scatter(df[!, :A], df[!, :D], color=:darkblue,
   xlab="Standardized median age of marriage",
   ylab="Standardize divorce rate")
 plot!(xi, yi, lab="Regression line")
@@ -116,7 +99,7 @@ plot!((xi, yh), color=:lightgrey, leg=false)
 for i in 1:length(xi)
   plot!([xi[i], xi[i]], [yl[i], yh[i]], color=:lightgrey, leg=false)
 end
-scatter!(df[:A], df[:D], color=:darkblue)
+scatter!(df[!, :A], df[!, :D], color=:darkblue)
 plot!(xi, yi, lab="Regression line")
 
 # End of `05/m5.1s.jl`

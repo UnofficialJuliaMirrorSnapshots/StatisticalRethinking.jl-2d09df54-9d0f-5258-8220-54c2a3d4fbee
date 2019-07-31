@@ -1,7 +1,7 @@
 # Load Julia packages (libraries) needed  for the snippets in chapter 0
 
 using StatisticalRethinking, CmdStan
-gr(size=(600,600));
+#gr(size=(600,600));
 
 # CmdStan uses a tmp directory to store the output of cmdstan
 
@@ -59,7 +59,7 @@ rc, chn, cnames = stan(stanmodel, heightsdata, ProjDir, diagnostics=false,
 
 # Describe the draws
 
-describe(chn)
+MCMCChains.describe(chn)
 
 # Plot the density of posterior draws
 

@@ -1,7 +1,7 @@
 # Load Julia packages (libraries) needed
 
 using StatisticalRethinking, CmdStan
-gr(size=(600,600));
+#gr(size=(600,600));
 
 # CmdStan uses a tmp directory to store the output of cmdstan
 
@@ -53,7 +53,7 @@ rc, chn, cnames = stan(stanmodel, binomialdata, ProjDir, diagnostics=false,
 
 # Describe the draws
 
-describe(chn)
+MCMCChains.describe(chn)
 
 # Look at area of hpd
 

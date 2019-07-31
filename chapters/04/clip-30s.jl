@@ -1,5 +1,5 @@
 using StatisticalRethinking, CmdStan, LinearAlgebra
-gr(size=(600,600));
+#gr(size=(600,600));
 
 ProjDir = rel_path("..", "scripts", "04")
 cd(ProjDir)
@@ -14,7 +14,7 @@ first(df2, 5)
 
 chn = deserialize(joinpath(ProjDir, "m4.1s.jls"))
 
-describe(chn)
+MCMCChains.describe(chn)
 
 density(chn, lab="All heights", xlab="height [cm]", ylab="density")
 

@@ -3,7 +3,7 @@
 # Load Julia packages (libraries) needed  for the snippets in chapter 0
 
 using StatisticalRethinking, Optim
-gr(size=(600,600));
+#gr(size=(600,600));
 
 # ### snippet 3.2
 
@@ -26,7 +26,7 @@ chn = MCMCChains.Chains(reshape(samples, N, 1, 1), ["toss"]);
 
 # Describe the chain
 
-describe(chn)
+MCMCChains.describe(chn)
 
 # ### snippet 3.6
 

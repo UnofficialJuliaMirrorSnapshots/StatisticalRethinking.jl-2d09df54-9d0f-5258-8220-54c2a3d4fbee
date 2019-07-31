@@ -1,10 +1,10 @@
 # Load Julia packages (libraries) needed  for the snippets in chapter 0
 
-using StanModels
+using StatisticalRethinking, CmdStan
 
 # CmdStan uses a tmp directory to store the output of cmdstan
 
-ProjDir = rel_path_s("..", "scripts", "05")
+ProjDir = rel_path("..", "scripts", "05")
 cd(ProjDir)
 
 # ### snippet 5.1
@@ -12,13 +12,13 @@ cd(ProjDir)
 wd = CSV.read(rel_path("..", "data", "WaffleDivorce.csv"), delim=';')
 df = convert(DataFrame, wd);
 
-mean_ma = mean(df[:Marriage])
-df[:Marriage_s] = convert(Vector{Float64},
-  (df[:Marriage]) .- mean_ma)/std(df[:Marriage]);
+mean_ma = mean(df[!, :Marriage])
+df[!, :Marriage_s] = convert(Vector{Float64},
+  (df[!, :Marriage]) .- mean_ma)/std(df[!, :Marriage]);
 
-mean_mam = mean(df[:MedianAgeMarriage])
-df[:MedianAgeMarriage_s] = convert(Vector{Float64},
-  (df[:MedianAgeMarriage]) .- mean_mam)/std(df[:MedianAgeMarriage]);
+mean_mam = mean(df[!, :MedianAgeMarriage])
+df[!, :MedianAgeMarriage_s] = convert(Vector{Float64},
+  (df[!, :MedianAgeMarriage]) .- mean_mam)/std(df[!, :MedianAgeMarriage]);
   
 df[1:6, [1, 7, 14, 15]]
 
@@ -64,8 +64,8 @@ monitors = ["a", "bA", "bM", "sigma", "Divorce"],
 
 # Input data for cmdstan
 
-m5_3_data = Dict("N" => size(df, 1), "divorce" => df[:Divorce],
-    "marriage_z" => df[:Marriage_s], "median_age_z" => df[:MedianAgeMarriage_s]);
+m5_3_data = Dict("N" => size(df, 1), "divorce" => df[!, :Divorce],
+    "marriage_z" => df[!, :Marriage_s], "median_age_z" => df[!, :MedianAgeMarriage_s]);
 
 # Sample using cmdstan
 
@@ -74,7 +74,7 @@ rc, chn, cnames = stan(stanmodel, m5_3_data, ProjDir, diagnostics=false,
 
 # Describe the draws
 
-describe(chn)
+MCMCChains.describe(chn)
 
 # Rethinking results
 

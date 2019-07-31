@@ -3,7 +3,7 @@
 # ### snippet 0.5 is replaced by below `using StatisticalRethinking`.
 
 using StatisticalRethinking, GLM
-gr(size=(600, 600));
+#gr(size=(600, 600));
 
 # ### snippet 0.4
 
@@ -22,7 +22,7 @@ coef(m)
 
 # Plot residuals against speed
 
-scatter( df2[:height], residuals(m), xlab="Height",
+scatter( df2[!, :height], residuals(m), xlab="Height",
 ylab="Model residual values", lab="Model residuals")
   
 # End of `00/clip-04-05.jl`

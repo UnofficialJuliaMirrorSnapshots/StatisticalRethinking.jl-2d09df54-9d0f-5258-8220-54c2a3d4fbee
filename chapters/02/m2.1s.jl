@@ -1,5 +1,5 @@
 using StatisticalRethinking, CmdStan
-gr(size=(600,600));
+#gr(size=(600,600));
 
 ProjDir = rel_path("..", "scripts", "02")
 cd(ProjDir)
@@ -40,7 +40,7 @@ binomialdata = Dict("N" => length(n2), "n" => n2, "k" => k2);
 rc, chn, cnames = stan(stanmodel, binomialdata, ProjDir, diagnostics=false,
   CmdStanDir=CMDSTAN_HOME);
 
-describe(chn)
+MCMCChains.describe(chn)
 
 fits = Vector{Normal{Float64}}(undef, 4)
 for i in 1:4
